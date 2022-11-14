@@ -15,6 +15,9 @@
  */
 package org.apache.ibatis.type;
 
+import org.apache.ibatis.io.ResolverUtil;
+import org.apache.ibatis.io.Resources;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.ResultSet;
@@ -29,9 +32,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.ibatis.io.ResolverUtil;
-import org.apache.ibatis.io.Resources;
-
 /**
  * @author Clinton Begin
  */
@@ -40,6 +40,7 @@ public class TypeAliasRegistry {
   private final Map<String, Class<?>> typeAliases = new HashMap<>();
 
   public TypeAliasRegistry() {
+    // 注册基本数据类型别名对应的类型
     registerAlias("string", String.class);
 
     registerAlias("byte", Byte.class);

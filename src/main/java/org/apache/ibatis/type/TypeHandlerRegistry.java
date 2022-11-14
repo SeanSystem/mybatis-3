@@ -15,6 +15,11 @@
  */
 package org.apache.ibatis.type;
 
+import org.apache.ibatis.binding.MapperMethod.ParamMap;
+import org.apache.ibatis.io.ResolverUtil;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.Configuration;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Constructor;
@@ -42,11 +47,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.ibatis.binding.MapperMethod.ParamMap;
-import org.apache.ibatis.io.ResolverUtil;
-import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.Configuration;
 
 /**
  * @author Clinton Begin
@@ -78,7 +78,7 @@ public final class TypeHandlerRegistry {
    */
   public TypeHandlerRegistry(Configuration configuration) {
     this.unknownTypeHandler = new UnknownTypeHandler(configuration);
-
+    // 注册类型处理器
     register(Boolean.class, new BooleanTypeHandler());
     register(boolean.class, new BooleanTypeHandler());
     register(JdbcType.BOOLEAN, new BooleanTypeHandler());

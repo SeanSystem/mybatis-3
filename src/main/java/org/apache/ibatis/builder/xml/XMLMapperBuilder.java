@@ -15,18 +15,6 @@
  */
 package org.apache.ibatis.builder.xml;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import org.apache.ibatis.builder.BaseBuilder;
 import org.apache.ibatis.builder.BuilderException;
 import org.apache.ibatis.builder.CacheRefResolver;
@@ -48,6 +36,18 @@ import org.apache.ibatis.reflection.MetaClass;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
+
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author Clinton Begin
@@ -91,8 +91,8 @@ public class XMLMapperBuilder extends BaseBuilder {
   }
 
   public void parse() {
-    if (!configuration.isResourceLoaded(resource)) {
-      configurationElement(parser.evalNode("/mapper"));
+    if (!configuration.isResourceLoaded(resource)) { // 判断mapper.xml是否已加载
+      configurationElement(parser.evalNode("/mapper")); // 解析mapper
       configuration.addLoadedResource(resource);
       bindMapperForNamespace();
     }
@@ -108,17 +108,18 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   private void configurationElement(XNode context) {
     try {
+      // 获取命名空间
       String namespace = context.getStringAttribute("namespace");
       if (namespace == null || namespace.isEmpty()) {
         throw new BuilderException("Mapper's namespace cannot be empty");
       }
       builderAssistant.setCurrentNamespace(namespace);
-      cacheRefElement(context.evalNode("cache-ref"));
-      cacheElement(context.evalNode("cache"));
-      parameterMapElement(context.evalNodes("/mapper/parameterMap"));
-      resultMapElements(context.evalNodes("/mapper/resultMap"));
-      sqlElement(context.evalNodes("/mapper/sql"));
-      buildStatementFromContext(context.evalNodes("select|insert|update|delete"));
+      cacheRefElement(context.evalNode("cache-ref")); // 解析cache-ref标签
+      cacheElement(context.evalNode("cache")); // 解析cache标签
+      parameterMapElement(context.evalNodes("/mapper/parameterMap")); // 解析parameterMap标签
+      resultMapElements(context.evalNodes("/mapper/resultMap")); // 解析resultMap标签
+      sqlElement(context.evalNodes("/mapper/sql")); // 解析sql标签
+      buildStatementFromContext(context.evalNodes("select|insert|update|delete")); // // 解析select|insert|update|delete标签
     } catch (Exception e) {
       throw new BuilderException("Error parsing Mapper XML. The XML location is '" + resource + "'. Cause: " + e, e);
     }
