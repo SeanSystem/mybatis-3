@@ -25,7 +25,7 @@ public interface Interceptor {
   Object intercept(Invocation invocation) throws Throwable;
 
   default Object plugin(Object target) {
-    return Plugin.wrap(target, this);
+    return Plugin.wrap(target, this); // 创建插件代理对象
   }
 
   default void setProperties(Properties properties) {

@@ -15,27 +15,6 @@
  */
 package org.apache.ibatis.builder.annotation;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.apache.ibatis.annotations.Arg;
 import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.CacheNamespaceRef;
@@ -90,6 +69,27 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * @author Clinton Begin
  * @author Kazuki Shimizu
@@ -114,14 +114,14 @@ public class MapperAnnotationBuilder {
 
   public void parse() {
     String resource = type.toString();
-    if (!configuration.isResourceLoaded(resource)) {
-      loadXmlResource();
-      configuration.addLoadedResource(resource);
-      assistant.setCurrentNamespace(type.getName());
-      parseCache();
-      parseCacheRef();
-      for (Method method : type.getMethods()) {
-        if (!canHaveStatement(method)) {
+    if (!configuration.isResourceLoaded(resource)) { // 判断资源是否已加载
+      loadXmlResource(); // 加载mapper对应的xml文件，如果存在
+      configuration.addLoadedResource(resource); // 添加已加载资源名称
+      assistant.setCurrentNamespace(type.getName()); // 设置当前命名空间
+      parseCache(); // 解析CacheNamespace注解
+      parseCacheRef(); // 解析CacheNamespaceRef注解
+      for (Method method : type.getMethods()) { // 获取mapper接口中的方法进行遍历
+        if (!canHaveStatement(method)) { // 判断方法是否合法，不是default和bridge方法
           continue;
         }
         if (getAnnotationWrapper(method, false, Select.class, SelectProvider.class).isPresent()
@@ -129,13 +129,13 @@ public class MapperAnnotationBuilder {
           parseResultMap(method);
         }
         try {
-          parseStatement(method);
+          parseStatement(method); // 根据方法上的注解生成相应的MappedStatement
         } catch (IncompleteElementException e) {
-          configuration.addIncompleteMethod(new MethodResolver(this, method));
+          configuration.addIncompleteMethod(new MethodResolver(this, method)); // 如果解析过程发生异常，将未解析成功的method加入incompleteMethods
         }
       }
     }
-    parsePendingMethods();
+    parsePendingMethods(); // 解析上面未解析成功的method，解析方式跟上面一致
   }
 
   private boolean canHaveStatement(Method method) {

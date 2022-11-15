@@ -15,10 +15,6 @@
  */
 package org.apache.ibatis.executor.statement;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.ExecutorException;
@@ -32,6 +28,10 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.TypeHandlerRegistry;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * @author Clinton Begin
@@ -85,9 +85,9 @@ public abstract class BaseStatementHandler implements StatementHandler {
     ErrorContext.instance().sql(boundSql.getSql());
     Statement statement = null;
     try {
-      statement = instantiateStatement(connection);
-      setStatementTimeout(statement, transactionTimeout);
-      setFetchSize(statement);
+      statement = instantiateStatement(connection); // 初始化Statement
+      setStatementTimeout(statement, transactionTimeout); // 设置超时时间
+      setFetchSize(statement); // 设置获取数据条数
       return statement;
     } catch (SQLException e) {
       closeStatement(statement);

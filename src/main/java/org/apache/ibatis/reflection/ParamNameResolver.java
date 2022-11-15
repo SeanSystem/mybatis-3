@@ -15,6 +15,12 @@
  */
 package org.apache.ibatis.reflection;
 
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.binding.MapperMethod.ParamMap;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.ResultHandler;
+import org.apache.ibatis.session.RowBounds;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -24,12 +30,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.binding.MapperMethod.ParamMap;
-import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.ResultHandler;
-import org.apache.ibatis.session.RowBounds;
 
 public class ParamNameResolver {
 
@@ -57,6 +57,7 @@ public class ParamNameResolver {
   public ParamNameResolver(Configuration config, Method method) {
     this.useActualParamName = config.isUseActualParamName();
     final Class<?>[] paramTypes = method.getParameterTypes();
+    // 获取方法参数中的注解
     final Annotation[][] paramAnnotations = method.getParameterAnnotations();
     final SortedMap<Integer, String> map = new TreeMap<>();
     int paramCount = paramAnnotations.length;
@@ -67,16 +68,16 @@ public class ParamNameResolver {
         continue;
       }
       String name = null;
-      for (Annotation annotation : paramAnnotations[paramIndex]) {
-        if (annotation instanceof Param) {
+      for (Annotation annotation : paramAnnotations[paramIndex]) { // 遍历参数注解，查找是否存在@param注解
+        if (annotation instanceof Param) { // 存在@param注解
           hasParamAnnotation = true;
-          name = ((Param) annotation).value();
+          name = ((Param) annotation).value(); // 将注解值作为name
           break;
         }
       }
-      if (name == null) {
+      if (name == null) { // 不存在@param注解
         // @Param was not specified.
-        if (useActualParamName) {
+        if (useActualParamName) { // 判断是否用参数名作为name
           name = getActualParamName(method, paramIndex);
         }
         if (name == null) {
