@@ -95,13 +95,14 @@ public class CachingExecutor implements Executor {
       throws SQLException {
     Cache cache = ms.getCache();
     if (cache != null) { // 判断是否开启了缓存
-      flushCacheIfRequired(ms);
+      flushCacheIfRequired(ms); // 判断是否需要清除缓存
       if (ms.isUseCache() && resultHandler == null) {
         ensureNoOutParams(ms, boundSql);
         @SuppressWarnings("unchecked")
-        List<E> list = (List<E>) tcm.getObject(cache, key);
+        List<E> list = (List<E>) tcm.getObject(cache, key); // 从缓存中获取
         if (list == null) {
           list = delegate.query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
+          // 将查询到的数据添加到缓存中（这时添加到entriesToAddOnCommit中，等事务提交才真正提交到缓存中）
           tcm.putObject(cache, key, list); // issue #578 and #116
         }
         return list;

@@ -22,6 +22,10 @@ public class Main {
     SqlSession sqlSession = sessionFactory.openSession();
     UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
     User user = userMapper.getUserById(1);
+    sqlSession.commit();
+    SqlSession sqlSession1 = sessionFactory.openSession();
+    UserMapper mapper = sqlSession1.getMapper(UserMapper.class);
+    User userById = mapper.getUserById(1);
     System.out.println(user);
   }
 }

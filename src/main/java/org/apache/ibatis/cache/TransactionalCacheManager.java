@@ -15,11 +15,11 @@
  */
 package org.apache.ibatis.cache;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.ibatis.cache.decorators.TransactionalCache;
 import org.apache.ibatis.util.MapUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Clinton Begin
@@ -41,6 +41,7 @@ public class TransactionalCacheManager {
   }
 
   public void commit() {
+    // 事务提交，将缓存数据进行提交
     for (TransactionalCache txCache : transactionalCaches.values()) {
       txCache.commit();
     }

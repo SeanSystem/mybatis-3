@@ -1,10 +1,12 @@
 package debug.pojo;
 
+import java.io.Serializable;
+
 /**
  * @author huyb
  * @date 2022-11-14 10:41
  */
-public class User {
+public class User implements Serializable {
 
   private Integer userId;
 

@@ -1,6 +1,7 @@
 package debug.mapper;
 
 import debug.pojo.User;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @author huyb
@@ -8,5 +9,5 @@ import debug.pojo.User;
  */
 public interface UserMapper {
 
-  User getUserById(Integer userId);
+  User getUserById(@Param("userId") Integer userId);
 }
